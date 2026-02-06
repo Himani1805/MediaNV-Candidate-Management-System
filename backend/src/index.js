@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import candidateRoutes from './routes/candidateRoutes.js';
 
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,6 +24,7 @@ app.use((req, res, next) => {
 
 // Global Error Handler
 app.use((err, req, res, next) => {
+    console.error(err.stack); // Log error stack to console
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     res.status(statusCode).json({
         success: false,

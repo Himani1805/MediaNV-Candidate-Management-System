@@ -7,24 +7,23 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Explicitly load .env from src/ directory
+// Load .env from src directory (one level up from config)
 dotenv.config({ path: join(__dirname, '../.env') });
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  connectionString: process.env.DATABASE_URL?.replace(/\?sslmode=.*$/, ''), // Strip sslmode params to fix warnings
+  ssl: {
+    rejectUnauthorized: false // Required for Neon and many cloud providers
+  }
 });
 
-// Test Connection Log
-pool.query('SELECT NOW()', (err, res) => {
+// Test Connection
+pool.connect((err, client, release) => {
   if (err) {
-    console.error('Database connection error:', err.stack);
-  } else {
-    console.log('PostgreSQL Connected at:', res.rows[0].now);
+    return console.error('Neon Connection Error:', err.stack);
   }
+  console.log('Connected to Neon Cloud PostgreSQL');
+  release();
 });
 
 export default pool;
