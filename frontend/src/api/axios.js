@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api', // Matches your Backend URL
+    baseURL: 'https://medianv-candidate-management-system.onrender.com/api', // Matches your Backend URL
 });
 
 export default API;
